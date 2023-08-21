@@ -1,95 +1,66 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import Movie from './components/Movie';
+import { useSelector } from 'react-redux';
+
+import InfiniteScroll from 'react-infinite-scroll-component';
+import useMovies from './hooks/useMovies';
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const { movies, getMovies } = useMovies();
+	useEffect(() => {
+		getMovies(1);
+	}, []);
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	const [page, setPage] = useState(1);
+	const [hasMoreItems, setHasMoreItems] = useState(true);
+	const totalPages = useSelector((state) => state.movies.total_pages);
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+	const loadItems = () => {
+		if (page < totalPages || totalPages === 0) {
+			setPage(page + 1);
+			getMovies(page + 1);
+		} else {
+			setHasMoreItems(false);
+		}
+	};
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+	return (
+		<Container>
+			<InfiniteScroll
+				dataLength={movies.length}
+				next={loadItems}
+				hasMore={hasMoreItems}
+				loader={<h4>Loading...</h4>}
+			>
+				<MovieGrid>
+					{movies.map((mv) => {
+						return (
+							<Movie
+								id={mv.id}
+								key={mv.id}
+								title={mv.title}
+								img={mv.poster_path}
+								url={`/${mv.id}`}
+							/>
+						);
+					})}
+				</MovieGrid>
+			</InfiniteScroll>
+		</Container>
+	);
 }
+
+const MovieGrid = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	padding: 2em;
+	margin: 0 auto;
+`;
+
+const Container = styled.div`
+	overflow-y: auto;
+`;
