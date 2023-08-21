@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api`;
+const isServer = typeof window === 'undefined';
 
 // Async thunks
 export const addMovieToWatchList = createAsyncThunk(
@@ -10,7 +11,9 @@ export const addMovieToWatchList = createAsyncThunk(
 		try {
 			const config = {
 				headers: {
-					Authorization: 'Bearer ' + localStorage.getItem('token'),
+					Authorization: `Bearer ${
+						!isServer ? localStorage.getItem('token') : ''
+					}`,
 				},
 			};
 			const response = await axios.post(
@@ -31,7 +34,9 @@ export const fetchWatchListMovies = createAsyncThunk(
 		try {
 			const config = {
 				headers: {
-					Authorization: 'Bearer ' + localStorage.getItem('token'),
+					Authorization: `Bearer ${
+						!isServer ? localStorage.getItem('token') : ''
+					}`,
 				},
 			};
 			const response = await axios.get(`${BASE_URL}/watchlist`, config);

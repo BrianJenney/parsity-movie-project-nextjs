@@ -1,8 +1,8 @@
-'use client';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const isServer = typeof window === 'undefined';
 
 // Async action creators using createAsyncThunk
 export const signup = createAsyncThunk(
@@ -13,7 +13,8 @@ export const signup = createAsyncThunk(
 				`${BASE_URL}/auth/signup`,
 				formProps
 			);
-			window.localStorage.setItem('token', response.data.token);
+
+			!isServer && localStorage.setItem('token', response.data.token);
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error);
@@ -29,7 +30,7 @@ export const signin = createAsyncThunk(
 				`${BASE_URL}/auth/signin`,
 				formProps
 			);
-			window.localStorage.setItem('token', response.data.token);
+			!isServer && localStorage.setItem('token', response.data.token);
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error);
@@ -50,7 +51,7 @@ export const fetchUser = createAsyncThunk(
 				`${BASE_URL}/auth/current_user`,
 				config
 			);
-			window.localStorage.setItem('token', response.data.token);
+			!isServer && localStorage.setItem('token', response.data.token);
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error);
@@ -61,13 +62,13 @@ export const fetchUser = createAsyncThunk(
 const authSlice = createSlice({
 	name: 'auth',
 	initialState: {
-		authenticated: window.localStorage.getItem('token') || '',
+		authenticated: !isServer ? localStorage.getItem('token') : '',
 		errorMessage: '',
 		email: null,
 	},
 	reducers: {
 		signout: (state) => {
-			window.localStorage.removeItem('token');
+			!isServer && localStorage.removeItem('token');
 			state.authenticated = '';
 			state.email = null;
 		},
