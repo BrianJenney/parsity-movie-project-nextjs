@@ -27,9 +27,7 @@ export const AuthForm = ({ type = 'signin' }) => {
 	const dispatch = useDispatch();
 
 	const handleFormSubmit = (data) => {
-		const action = type === 'signin' ? signin : signup;
-		dispatch(action(data));
-		router.push('/');
+		// TODO
 	};
 
 	return (

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import Movie from './components/Movie';
 import { useSelector } from 'react-redux';
 
-import InfiniteScroll from 'react-infinite-scroll-component';
 import useMovies from './hooks/useMovies';
 
 export default function Home() {
@@ -14,40 +13,23 @@ export default function Home() {
 	}, []);
 
 	const [page, setPage] = useState(1);
-	const [hasMoreItems, setHasMoreItems] = useState(true);
 	const totalPages = useSelector((state) => state.movies.total_pages);
-
-	const loadItems = () => {
-		if (page < totalPages || totalPages === 0) {
-			setPage(page + 1);
-			getMovies(page + 1);
-		} else {
-			setHasMoreItems(false);
-		}
-	};
 
 	return (
 		<Container>
-			<InfiniteScroll
-				dataLength={movies.length}
-				next={loadItems}
-				hasMore={hasMoreItems}
-				loader={<h4>Loading...</h4>}
-			>
-				<MovieGrid>
-					{movies.map((mv) => {
-						return (
-							<Movie
-								id={mv.id}
-								key={mv.id}
-								title={mv.title}
-								img={mv.poster_path}
-								url={`/${mv.id}`}
-							/>
-						);
-					})}
-				</MovieGrid>
-			</InfiniteScroll>
+			<MovieGrid>
+				{movies.map((mv) => {
+					return (
+						<Movie
+							id={mv.id}
+							key={mv.id}
+							title={mv.title}
+							img={mv.poster_path}
+							url={`/${mv.id}`}
+						/>
+					);
+				})}
+			</MovieGrid>
 		</Container>
 	);
 }
