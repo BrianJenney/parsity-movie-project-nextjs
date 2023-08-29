@@ -25,7 +25,6 @@ const moviesSlice = createSlice({
 	name: 'movies',
 	initialState: {
 		movies: [],
-		total_pages: 0,
 		movie: {},
 		user: null,
 		status: 'idle',
@@ -53,7 +52,6 @@ const moviesSlice = createSlice({
 			.addCase(fetchMovies.fulfilled, (state, action) => {
 				state.status = 'succeeded';
 				state.movies = [...state.movies, ...action.payload.results];
-				state.total_pages = action.payload.total_pages;
 			})
 			.addCase(fetchMovies.rejected, (state, action) => {
 				state.status = 'failed';
