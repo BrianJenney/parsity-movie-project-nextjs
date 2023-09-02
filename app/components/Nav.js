@@ -1,57 +1,20 @@
 'use client';
-import React, { use, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { useSelector, useDispatch } from 'react-redux';
-import { signout } from '../store/slices/authSlice';
-import { fetchWatchListMovies } from '../store/slices/watchListSlice';
-import { useRouter } from 'next/navigation';
 
 export const Nav = () => {
-	const router = useRouter();
-	const dispatch = useDispatch();
-	const authenticated = useSelector((state) => state.auth.authenticated);
-	const email = useSelector((state) => state.auth.email);
-	const watchListCount = useSelector((state) => state.watchList.count);
-
-	useEffect(() => {
-		if (authenticated) {
-			dispatch(fetchWatchListMovies());
-		}
-	}, [authenticated, dispatch]);
-
-	const handleSignOutClick = () => {
-		dispatch(signout());
-		router.push('/');
-	};
-
 	const renderLinks = () => {
-		if (authenticated) {
-			return (
-				<>
-					<Link href='/watch-list'>
-						<li>Watch List: {watchListCount || 0}</li>
-					</Link>
-					<li>{email}</li>
-					<li>
-						<LinkButton href='#' onClick={handleSignOutClick}>
-							Sign Out
-						</LinkButton>
-					</li>
-				</>
-			);
-		} else {
-			return (
-				<>
-					<li>
-						<Link href='/signup'>Sign Up</Link>
-					</li>
-					<li>
-						<Link href='/signin'>Sign In</Link>
-					</li>
-				</>
-			);
-		}
+		return (
+			<>
+				<li>
+					<Link href='/signup'>Sign Up</Link>
+				</li>
+				<li>
+					<Link href='/signin'>Sign In</Link>
+				</li>
+			</>
+		);
 	};
 
 	return (
