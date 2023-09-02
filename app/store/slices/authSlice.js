@@ -68,31 +68,9 @@ const authSlice = createSlice({
 	},
 	reducers: {
 		signout: (state) => {
-			!isServer && localStorage.removeItem('token');
-			state.authenticated = '';
-			state.email = null;
+			// TODO
+			return state;
 		},
-	},
-	extraReducers: (builder) => {
-		builder
-			.addCase(signup.fulfilled, (state, action) => {
-				state.authenticated = action.payload.token;
-				state.email = action.payload.email || null;
-			})
-			.addCase(signup.rejected, (state, action) => {
-				state.errorMessage = action.payload;
-			})
-			.addCase(signin.fulfilled, (state, action) => {
-				state.authenticated = action.payload.token;
-				state.email = action.payload.email || null;
-			})
-			.addCase(signin.rejected, (state, action) => {
-				state.errorMessage = action.payload;
-			})
-			.addCase(fetchUser.fulfilled, (state, action) => {
-				state.authenticated = action.payload.token;
-				state.email = action.payload.email || null;
-			});
 	},
 });
 

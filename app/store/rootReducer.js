@@ -5,7 +5,6 @@ import watchListReducer from './slices/watchListSlice';
 
 const rootReducer = combineReducers({
 	movies: moviesReducer,
-	auth: authReducer,
 	watchList: watchListReducer,
 });
 
